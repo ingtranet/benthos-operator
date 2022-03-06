@@ -61,11 +61,10 @@ func getDeploymentFor(p *v1alpha1.BenthosPipeline) (*appsv1.Deployment, error) {
 						ImagePullPolicy: corev1.PullAlways,
 						Image:           p.Spec.Image,
 						Name:            "benthos",
-						Command:         []string{"/root/benthos"},
-						Args:            []string{"-c", "/root/config/benthos.yaml"},
+						Args:            []string{"-c", "/config/benthos.yaml"},
 						VolumeMounts: []corev1.VolumeMount{{
 							Name:      "config",
-							MountPath: "/root/config",
+							MountPath: "/config",
 						}},
 					}},
 					Volumes: []corev1.Volume{{
