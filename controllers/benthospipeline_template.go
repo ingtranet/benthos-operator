@@ -30,6 +30,7 @@ func getConfigMapFor(p *v1alpha1.BenthosPipeline) (*corev1.ConfigMap, error) {
 
 func getDeploymentFor(p *v1alpha1.BenthosPipeline) (*appsv1.Deployment, error) {
 	labels, err := getLabels(p)
+	zero := int32(0)
 	if err != nil {
 		return nil, err
 	}
@@ -43,7 +44,8 @@ func getDeploymentFor(p *v1alpha1.BenthosPipeline) (*appsv1.Deployment, error) {
 			},
 		},
 		Spec: appsv1.DeploymentSpec{
-			Replicas: &p.Spec.Replicas,
+			RevisionHistoryLimit: &zero,
+			Replicas:             &p.Spec.Replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: labels,
 			},
