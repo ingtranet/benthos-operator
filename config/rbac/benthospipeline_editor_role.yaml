@@ -1,0 +1,24 @@
+# permissions for end users to edit benthospipelines.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: benthospipeline-editor-role
+rules:
+- apiGroups:
+  - ingtra.net
+  resources:
+  - benthospipelines
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ingtra.net
+  resources:
+  - benthospipelines/status
+  verbs:
+  - get

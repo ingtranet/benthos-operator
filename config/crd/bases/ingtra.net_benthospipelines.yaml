@@ -1,0 +1,66 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.8.0
+  creationTimestamp: null
+  name: benthospipelines.ingtra.net
+spec:
+  group: ingtra.net
+  names:
+    kind: BenthosPipeline
+    listKind: BenthosPipelineList
+    plural: benthospipelines
+    singular: benthospipeline
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: BenthosPipeline is the Schema for the benthospipelines API
+        properties:
+          apiVersion:
+            description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+            type: string
+          kind:
+            description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: BenthosPipelineSpec defines the desired state of BenthosPipeline
+            properties:
+              config:
+                type: string
+              image:
+                default: jeffail/benthos:edge-cgo
+                description: Foo is an example field of BenthosPipeline. Edit benthospipeline_types.go
+                  to remove/update
+                type: string
+              inlineConfig:
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
+              replicas:
+                default: 1
+                format: int32
+                type: integer
+            type: object
+          status:
+            description: BenthosPipelineStatus defines the observed state of BenthosPipeline
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []

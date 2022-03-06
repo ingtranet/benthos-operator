@@ -1,0 +1,7 @@
+apiVersion: ingtra.net/v1alpha1
+kind: BenthosPipeline
+metadata:
+  name: benthospipeline-sample
+spec:
+  inlineConfig:
+    yes: abcde
