@@ -1,0 +1,81 @@
+version: '3'
+
+vars:
+  PROJECT_DIR:
+    sh: pwd
+  IMAGE: ingtranet/benthos-operator
+  TAG:
+    sh: git describe --tag --exact-match || echo "latest"
+
+tasks:
+  default:
+    deps:
+      - manifests
+      - generate
+
+  go-get-tool:
+
+    cmds:
+      - |
+        TEMP_DIR=$(mktemp -d) ;\
+        cd $TEMP_DIR ;\
+        go mod init tmp ;\
+        echo "Downloading {{.PACKAGE}}" ;\
+        GOBIN={{.PROJECT_DIR}}/bin go get {{.PACKAGE}} ;\
+        rm -rf $TEMP_DIR
+
+  go-get-controller-gen:
+    cmds:
+      - task: go-get-tool
+        vars:
+          PACKAGE: sigs.k8s.io/controller-tools/cmd/controller-gen@v0.8.0
+    sources:
+      - Taskfile.yml
+    generates:
+      - bin/controller-gen
+
+  go-get-kustomize:
+    cmds:
+      - task: go-get-tool
+        vars:
+          PACKAGE: sigs.k8s.io/kustomize/kustomize/v3@v3.8.7
+    sources:
+      - Taskfile.yml
+    generates:
+      - bin/kustomize
+
+  go-get-kubectl-slice:
+    cmds:
+      - task: go-get-tool
+        vars:
+          PACKAGE: github.com/patrickdappollonio/kubectl-slice@v1.2.0
+    sources:
+      - Taskfile.yml
+    generates:
+      - bin/kubectl-slice
+
+  manifests:
+    deps:
+      - go-get-controller-gen
+    cmds:
+      - bin/controller-gen rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+
+  generate:
+    deps:
+      - go-get-controller-gen
+    cmds:
+      - bin/controller-gen object:headerFile="hack/boilerplate.go.txt" paths="./..."
+
+  docker-test:
+    deps:
+      - manifests
+      - generate
+    cmds:
+      - docker run -it -v {{.PROJECT_DIR}}:/app golang:1.17 /bin/bash -c "cp -r /app /app_copy; cd /app_copy; rm -rf bin; make test"
+
+  docker-build:
+    deps:
+      - manifests
+      - generate
+    cmds:
+      - docker build -t {{.IMAGE}}:{{.TAG}} .
