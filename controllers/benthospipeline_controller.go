@@ -64,6 +64,11 @@ func (r *BenthosPipelineReconciler) Reconcile(ctx context.Context, req ctrl.Requ
 		logger.Error(err, "Finding resource failed")
 		return ctrl.Result{}, err
 	}
+	
+	if pipeline.GetDeletionTimestamp() != nil {
+		logger.Info("Pipeline is being deleted. Skip")
+		return ctrl.Result{}, nil
+	}
 
 	// reconcile the configMap
 	result, err := r.reconcileConfigMap(ctx, req, pipeline)
