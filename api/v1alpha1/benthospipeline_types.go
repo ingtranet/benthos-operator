@@ -41,7 +41,7 @@ type BenthosPipelineSpec struct {
 	Config   string `json:"config,omitempty"`
 	// +kubebuilder:pruning:PreserveUnknownFields
 	// +kubebuilder:validation:Type=object
-	InlineConfig runtime.RawExtension `json:"inlineConfig,omitempty"`
+	ConfigInline runtime.RawExtension `json:"configInline,omitempty"`
 }
 
 // BenthosPipelineStatus defines the observed state of BenthosPipeline
@@ -68,7 +68,7 @@ func (p *BenthosPipeline) GetYamlConfig() string {
 		return p.Spec.Config
 	} else {
 		var config map[string]interface{}
-		if err := json.Unmarshal(p.Spec.InlineConfig.Raw, &config); err != nil {
+		if err := json.Unmarshal(p.Spec.ConfigInline.Raw, &config); err != nil {
 			return "config-parsing-error"
 		}
 		yamlConfig, err := yaml.Marshal(config)

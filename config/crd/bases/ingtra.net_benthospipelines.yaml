@@ -37,14 +37,14 @@ spec:
             properties:
               config:
                 type: string
+              configInline:
+                type: object
+                x-kubernetes-preserve-unknown-fields: true
               image:
                 default: jeffail/benthos:edge-cgo
                 description: Foo is an example field of BenthosPipeline. Edit benthospipeline_types.go
                   to remove/update
                 type: string
-              inlineConfig:
-                type: object
-                x-kubernetes-preserve-unknown-fields: true
               replicas:
                 default: 1
                 format: int32
